@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matches Played vs Matches Won</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // Retrieve the data passed from the view
+            var data = JSON.parse('{{ data|escapejs }}');
+
+            // Create the DataTable object
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Team');
+            dataTable.addColumn('number', 'Matches Played');
+            dataTable.addColumn('number', 'Matches Won');
+
+            // Add the data rows to the DataTable
+            for (var i = 0; i < data.length; i++) {
+                var row = [data[i].team1, data[i].num_matches_played, data[i].num_matches_won];
+                dataTable.addRow(row);
+            }
+
+            // Set chart options
+            var options = {
+                title: 'Matches Played vs Matches Won',
+                width: 800,
+                height: 400
+            };
+
+            // Instantiate and draw the chart
+            var chart = new google.visualization.ColumnChart(document.getElementById('matchesPlayedVsWonChart'));
+            chart.draw(dataTable, options);
+        }
+
+        // Update the chart when the year selection changes
+        function updateChart() {
+            var selectedYear = document.getElementById('yearSelect').value;
+            window.location.href = '/matches_played_vs_won/?year=' + selectedYear;
+        }
+    </script>
+</head>
+<body>
+    <h1>Matches Played vs Matches Won</h1>
+    <h2>Select Year</h2>
+    <select id="yearSelect" onchange="updateChart()">
+        <option value="">All Years</option>
+        {% for year in years %}
+        <option value="{{ year.season }}" {% if year.season == selected_year %}selected{% endif %}>{{ year.season }}</option>
+        {% endfor %}
+    </select>
+    <div id="matchesPlayedVsWonChart"></div>
+</body>
+</html>

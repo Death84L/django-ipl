@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matches Won by Teams</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // Retrieve the data passed from the view
+            var data = JSON.parse('{{ data|escapejs }}');
+
+            // Create the DataTable object
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Team');
+            dataTable.addColumn('number', 'Wins');
+
+            // Add the data rows to the DataTable
+            for (var i = 0; i < data.length; i++) {
+                var row = [data[i].team1, data[i].num_wins];
+                dataTable.addRow(row);
+            }
+
+            // Set chart options
+            var options = {
+                title: 'Matches Won by Teams',
+                width: 800,
+                height: 400,
+                isStacked: true
+            };
+
+            // Instantiate and draw the chart
+            var chart = new google.visualization.BarChart(document.getElementById('matchesWonByTeamsChart'));
+            chart.draw(dataTable, options);
+        }
+    </script>
+</head>
+<body>
+    <div id="matchesWonByTeamsChart"></div>
+</body>
+</html>

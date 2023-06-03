@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matches Per Year</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // Retrieve the data passed from the view
+            var data = JSON.parse('{{ data|escapejs }}');
+            console.log(data);
+            // Create the DataTable object
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Year');
+            dataTable.addColumn('number', 'Matches');
+
+            // Add the data rows to the DataTable
+            for (var i = 0; i < data.length; i++) {
+                var row = [data[i].season.toString(), data[i].num_matches];
+                dataTable.addRow(row);
+            }
+
+            // Set chart options
+            var options = {
+                title: 'Matches Per Year',
+                width: 800,
+                height: 400
+            };
+
+            // Instantiate and draw the chart
+            var chart = new google.visualization.ColumnChart(document.getElementById('matchesPerYearChart'));
+            chart.draw(dataTable, options);
+        }
+    </script>
+</head>
+<body>
+    <div id="matchesPerYearChart"></div>
+</body>
+</html>
